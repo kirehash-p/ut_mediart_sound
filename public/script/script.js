@@ -7,7 +7,9 @@ let prevImg;
 let currentImg;
 let sx, sy, sWidth, sHeight;
 let rosc, gosc, bosc;
+let rosc_his = gosc_his = bosc_his = [0, 0, 0, 0, 0];
 let audioStarted = false;
+let amp_his = [0, 0, 0, 0, 0];
 
 // 最初に実行される関数
 function setup() {
@@ -68,10 +70,10 @@ function rgbToSound(r, g, b) {
     // r, g, b はそれぞれ0~255の値を取る
     // 例えば、rが大きいほど高い音を鳴らす、など
     // この関数は、draw関数の中で呼び出される
-    let amp = map((r + g + b) / 3, 0, 255, 0, 1);
-    rosc.freq(map(r, 0, 255, 100, 3000));
-    gosc.freq(map(g, 0, 255, 100, 3000));
-    bosc.freq(map(b, 0, 255, 100, 3000));
+    let amp = convolution(amp_his, (r + g + b) / 3 / 255);
+    rosc.freq(convolution(rosc_his, map(r, 0, 255, 100, 1000)));
+    gosc.freq(convolution(gosc_his, map(g, 0, 255, 100, 2000)));
+    bosc.freq(convolution(bosc_his, map(b, 0, 255, 100, 4000)));
     rosc.amp(amp);
     gosc.amp(amp);
     bosc.amp(amp);
@@ -82,4 +84,11 @@ function mousePressed() {
         userStartAudio();
         audioStarted = true;
     }
+}
+
+function convolution(array, num) {
+    array.shift();
+    array.push(num);
+    // 配列の平均を取る
+    return array.reduce((a, b) => a + b) / array.length;
 }
