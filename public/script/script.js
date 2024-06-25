@@ -7,9 +7,11 @@ let prevImg;
 let currentImg;
 let sx, sy, sWidth, sHeight;
 let rosc, gosc, bosc;
+let audioStarted = false;
 
 // 最初に実行される関数
 function setup() {
+    getAudioContext().suspend();
     frameRate(20);
     rosc = new p5.Oscillator();
     rosc.setType('sine');
@@ -41,20 +43,24 @@ function windowResized() {
 }
 
 function draw() {
-    background(255);
-    currentImg = cropImg(capture.get(), sx, sy, sWidth, sHeight); // helper.js
-    diff = getImageDiff(prevImg, currentImg); // helper.js
-    image(diff, 0, 0, w - 10, h - 10);
-    [r, g, b] = rgb_ratio(diff); // helper.js
-    rgbToSound(r, g, b);
-    // rgbの表示
-    fill(255);
-    textSize(20);
-    text(`R: ${r}`, 10, 30);
-    text(`G: ${g}`, 10, 60);
-    text(`B: ${b}`, 10, 90);
-
-    prevImg = currentImg;
+    if (audioStarted) {
+        currentImg = cropImg(capture.get(), sx, sy, sWidth, sHeight); // helper.js
+        diff = getImageDiff(prevImg, currentImg); // helper.js
+        image(diff, 0, 0, w - 10, h - 10);
+        [r, g, b] = rgb_ratio(diff); // helper.js
+        rgbToSound(r, g, b);
+        // rgbの表示
+        fill(255);
+        textSize(20);
+        text(`R: ${r}`, 10, 30);
+        text(`G: ${g}`, 10, 60);
+        text(`B: ${b}`, 10, 90);
+        prevImg = currentImg;
+    } else {
+        fill(0);
+        textSize(60);
+        text('Click to start', 10, 30);
+    }
 }
 
 function rgbToSound(r, g, b) {
@@ -71,3 +77,9 @@ function rgbToSound(r, g, b) {
     bosc.amp(amp);
 }
 
+function mousePressed() {
+    if (!audioStarted) {
+        userStartAudio();
+        audioStarted = true;
+    }
+}
