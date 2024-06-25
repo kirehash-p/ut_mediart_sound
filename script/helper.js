@@ -82,10 +82,39 @@ function rgb_ratio(img) {
         }
     }
     if (count == 0) {
-        return [0, 0, 0];
-    } 
+        return [0, 0, 0, 0];
+    }
     r /= count;
     g /= count;
     b /= count;
     return [r, g, b];
+}
+
+// RGBをHSVに変換する
+function rgbToHsv(r, g, b) {
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let h, s, v;
+    if (max == min) {
+        h = 0;
+    } else if (max == r) {
+        h = 60 * ((g - b) / (max - min));
+    } else if (max == g) {
+        h = 60 * ((b - r) / (max - min) + 2);
+    } else if (max == b) {
+        h = 60 * ((r - g) / (max - min) + 4);
+    }
+    if (h < 0) {
+        h += 360;
+    }
+    s = (max == 0) ? 0 : (max - min) / max;
+    v = max;
+    return [h, s, v];
+}
+
+function convolution(array, num) {
+    array.shift();
+    array.push(num);
+    // 配列の平均を取る
+    return array.reduce((a, b) => a + b) / array.length;
 }
