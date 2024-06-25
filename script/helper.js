@@ -48,12 +48,13 @@ function getImageDiff(img1, img2) {
                 diff.pixels[index] = 0;
                 diff.pixels[index + 1] = 0;
                 diff.pixels[index + 2] = 0;
+                diff.pixels[index + 3] = 0;
             } else {
                 diff.pixels[index] = img2.pixels[index];
                 diff.pixels[index + 1] = img2.pixels[index + 1];
                 diff.pixels[index + 2] = img2.pixels[index + 2];
+                diff.pixels[index + 3] = 255;
             }
-            diff.pixels[index + 3] = 255;
         }
     }
     diff.updatePixels();

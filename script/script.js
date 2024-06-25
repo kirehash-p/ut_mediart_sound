@@ -39,17 +39,14 @@ function draw() {
     if (audioStarted) {
         let r, g, b, H, S, V;
         let currentImg = cropImg(capture.get(), sx, sy, sWidth, sHeight); // helper.js
+        background(255, 10);
         diff = getImageDiff(prevImg, currentImg); // helper.js
         image(diff, 0, 0, w - 10, h - 10);
         [r, g, b] = rgb_ratio(diff); // helper.js
         [H, S, V] = rgbToHsv(r, g, b); // helper.js
         hsvToSound(H, S, V);
         // hsvの表示
-        fill(255);
-        textSize(20);
-        text(`H: ${H}`, 10, 30);
-        text(`S: ${S}`, 10, 60);
-        text(`V: ${V}`, 10, 90);
+        drawHsv(H, S, V);
         prevImg = currentImg;
     } else {
         // 画面の中央にテキストを表示する
@@ -82,6 +79,18 @@ function generateSound(freq, amp, duration) {
     }, (duration + 1) * 1000);
 }
 
+function drawHsv(h, s, v) {
+    // hsvの表示
+    // 10,20 から 60,60 の範囲をまず塗りつぶす
+    fill(255);
+    stroke(0);
+    rect(0, 0, 75, 70);
+    fill(0);
+    textSize(20);
+    text("H: " + Math.round(h), 10, 20);
+    text("S: " + Math.round(s*100), 10, 40);
+    text("V: " + Math.round(v), 10, 60);
+}
 
 // マウスがクリックされたときに呼び出される関数。
 function mousePressed() {
